@@ -1,1 +1,1 @@
-# Cybernes-assignment
+# Cybernews-assignment
