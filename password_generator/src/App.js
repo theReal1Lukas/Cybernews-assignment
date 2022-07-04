@@ -1,7 +1,14 @@
-import PasswordGenerator from "./components/PasswordGenerator";
+import NavigationBar from "./layout/header/NavigationBar";
+import Content from "./layout/content/Content";
+import "./App.css";
 
 function App() {
-  return <PasswordGenerator />;
+  return (
+    <div className="app">
+      <NavigationBar />
+      <Content />
+    </div>
+  );
 }
 
 export default App;
