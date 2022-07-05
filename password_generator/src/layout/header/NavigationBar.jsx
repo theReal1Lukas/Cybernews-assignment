@@ -6,7 +6,7 @@ export default function NavigationBar() {
   return (
     <div className={styles.nav}>
       <img
-        className={styles["nav_logo"]}
+        className={styles.nav_logo}
         src={cyberNewsLogo}
         alt="cybernews-logo"
       />

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./passwordGenerator.module.css";
 import arrow from "../../assets/refresh-arrow.png";
+import Filters from "./Filters";
 
 const PSW_CHAR = {
   upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -14,34 +15,35 @@ export default function PasswordGenerator() {
   const [lowerCase, setLowerCase] = useState(PSW_CHAR.lower);
   const [digits, setDigits] = useState(PSW_CHAR.numbers);
   const [symbols, setSymbols] = useState(PSW_CHAR.characters);
-  const filters = ["lower case", "upper case", "special symbols", "numbers"];
-  const [activeFilters, setActiveFilters] = useState({
-    filterName: "",
-    filterState: false,
-  });
 
-  //handle filters
+  const [lowFilter, setLowFilter] = useState(true);
+  const [highFilter, setHighFilter] = useState(true);
+  const [numFilter, setNumFilter] = useState(true);
+  const [symFilter, setSymFilter] = useState(true);
+
+  //check if filters active
   useEffect(() => {
-    if (activeFilters.filterState === true) {
-      if (activeFilters.filterName === "lowercase") {
-        setLowerCase("");
-      }
-      if (activeFilters.filterName === "uppercase") {
-        setUpperCase("");
-      }
-      if (activeFilters.filterName === "digits") {
-        setDigits("");
-      }
-      if (activeFilters.filterName === "specialChar") {
-        setSymbols("");
-      }
-    } else if (activeFilters.filterState === false) {
-      setUpperCase(PSW_CHAR.upper);
+    if (lowFilter === false) {
+      setLowerCase("");
+    } else if (lowFilter === true) {
       setLowerCase(PSW_CHAR.lower);
+    }
+    if (highFilter === false) {
+      setUpperCase("");
+    } else if (highFilter === true) {
+      setUpperCase(PSW_CHAR.upper);
+    }
+    if (numFilter === false) {
+      setDigits("");
+    } else if (numFilter === true) {
       setDigits(PSW_CHAR.numbers);
+    }
+    if (symFilter === false) {
+      setSymbols("");
+    } else if (symFilter === true) {
       setSymbols(PSW_CHAR.characters);
     }
-  }, [activeFilters]);
+  }, [lowFilter, highFilter, numFilter, symFilter]);
   function handleGenerator() {
     const str = upperCase + symbols + lowerCase + digits;
     let pass = "";
@@ -63,9 +65,10 @@ export default function PasswordGenerator() {
       .writeText(psw)
       .then(console.log("Password copied sucessfully"));
   };
+
   return (
-    <div className={styles["password_generator"]}>
-      <div className={styles["password_generator__texts"]}>
+    <div className={styles.password_generator}>
+      <div className={styles.password_generator_texts}>
         <h1 className={styles.text}>Generate strong passwords</h1>
         <p className={styles.text}>
           Upgrade the security of your online accounts.
@@ -76,108 +79,46 @@ export default function PasswordGenerator() {
         </p>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <input
-          id="psw-input"
-          className={styles["password_input"]}
-          defaultValue={password}
-        />
-        <button className={styles["copy_btn"]} onClick={handleCopyPassword}>
+      <div className={styles.input_container}>
+        <div className={styles.input}>
+          <input
+            id="psw-input"
+            className={styles.password_input}
+            defaultValue={
+              lowFilter === false &&
+              highFilter === false &&
+              numFilter === false &&
+              symFilter === false
+                ? "Please select at least one filter"
+                : password
+            }
+          />
+
+          <button
+            className={styles["input_btn--generate"]}
+            onClick={handleGenerator}
+          >
+            <img className={styles.arrow_img} src={arrow} alt="arrow logo" />
+          </button>
+        </div>
+        <button
+          className={styles["input_btn--copy"]}
+          onClick={handleCopyPassword}
+        >
           Copy Password
         </button>
-        <button
-          style={{
-            background: "inherit",
-            border: "none",
-            borderRadius: "10px",
-            right: "250px",
-            top: "0px",
-            position: "relative",
-          }}
-          onClick={handleGenerator}
-        >
-          <img
-            className={styles["arrow_btn"]}
-            src={arrow}
-            alt="arrow image for password refresh"
-          />
-        </button>{" "}
       </div>
 
-      <br />
-      <div className={styles.filters}>
-        <div className={styles.filter}>
-          <input
-            className={styles.checkbox}
-            checked={
-              activeFilters.filterName === "lowercase" &&
-              activeFilters.filterState
-            }
-            type="checkbox"
-            name="only-lower"
-            onChange={() =>
-              setActiveFilters({
-                filterName: "lowercase",
-                filterState: !activeFilters.filterState,
-              })
-            }
-          />
-          <label htmlFor="only-lower"> lowercase</label>
-        </div>
-        <div className={styles.filter}>
-          <input
-            className={styles.checkbox}
-            checked={
-              activeFilters.filterName === "uppercase" &&
-              activeFilters.filterState
-            }
-            type="checkbox"
-            name="only-upper"
-            onChange={() =>
-              setActiveFilters({
-                filterName: "uppercase",
-                filterState: !activeFilters.filterState,
-              })
-            }
-          />
-          <label htmlFor="only-upper"> uppercase</label>
-        </div>
-        <div className={styles.filter}>
-          <input
-            className={styles.checkbox}
-            checked={
-              activeFilters.filterName === "digits" && activeFilters.filterState
-            }
-            type="checkbox"
-            name="only-digits"
-            onChange={() =>
-              setActiveFilters({
-                filterName: "digits",
-                filterState: !activeFilters.filterState,
-              })
-            }
-          />
-          <label htmlFor="only-digits"> digits</label>
-        </div>
-        <div className={styles.filter}>
-          <input
-            className={styles.checkbox}
-            checked={
-              activeFilters.filterName === "specialChar" &&
-              activeFilters.filterState
-            }
-            type="checkbox"
-            name="only-special_char"
-            onChange={() =>
-              setActiveFilters({
-                filterName: "specialChar",
-                filterState: !activeFilters.filterState,
-              })
-            }
-          />
-          <label htmlFor="only-special_char"> special</label>
-        </div>
-      </div>
+      <Filters
+        lowFilter={lowFilter}
+        setLowFilter={setLowFilter}
+        highFilter={highFilter}
+        setHighFilter={setHighFilter}
+        numFilter={numFilter}
+        setNumFilter={setNumFilter}
+        symFilter={symFilter}
+        setSymFilter={setSymFilter}
+      />
     </div>
   );
 }
