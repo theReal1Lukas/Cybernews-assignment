@@ -7,7 +7,7 @@ const PSW_CHAR = {
   upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
   lower: "abcdefghijklmnopqrstuvwxyz",
   numbers: "0123456789",
-  characters: "!#$%&'" + '"()*+,-./:;<=>?@[]^_`{|}~\\',
+  characters: "\"`!#$%&'()*+,-./:;<=>?@[]^_{|}~\\",
 };
 export default function PasswordGenerator() {
   const [password, setPassword] = useState("");
@@ -44,7 +44,8 @@ export default function PasswordGenerator() {
       setSymbols(PSW_CHAR.characters);
     }
   }, [lowFilter, highFilter, numFilter, symFilter]);
-  function handleGenerator() {
+
+  const handleGenerator = () => {
     const str = upperCase + symbols + lowerCase + digits;
     let pass = "";
 
@@ -53,11 +54,9 @@ export default function PasswordGenerator() {
       pass += str.charAt(rndm);
     }
     setPassword(pass);
-  }
+  };
 
-  useEffect(() => {
-    handleGenerator();
-  }, []);
+  window.onload = () => handleGenerator();
 
   const handleCopyPassword = () => {
     const psw = document.getElementById("psw-input").value;
